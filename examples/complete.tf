@@ -1,14 +1,14 @@
 module "apigee" {
   source = "../../"
 
-  project_id             = "my-project-id"
-  vpc_name              = "my-vpc"
+  project_id              = "my-project-id"
+  vpc_name                = "my-vpc"
   apigee_org_display_name = "My Apigee Organization"
   apigee_org_description  = "Complete example of Apigee X deployment"
   region                  = "europe-west1"
-  runtime_type           = "CLOUD"
+  runtime_type            = "CLOUD"
   apigee_org_billing_type = "CONSUMPTION"
-  retention              = "MINIMUM"
+  retention               = "MINIMUM"
 
   environment_config = {
     "prod-group" = {
@@ -19,7 +19,7 @@ module "apigee" {
           description       = "Production environment for API proxies"
           deployment_type   = "PROXY"
           api_proxy_type    = "PROGRAMMABLE"
-          type             = "COMPREHENSIVE"
+          type              = "COMPREHENSIVE"
           forward_proxy_uri = "http://proxy.example.com:3128"
           node_config = {
             min_node_count = 2
@@ -31,7 +31,7 @@ module "apigee" {
           description     = "Staging environment for API proxies"
           deployment_type = "PROXY"
           api_proxy_type  = "PROGRAMMABLE"
-          type           = "INTERMEDIATE"
+          type            = "INTERMEDIATE"
         }
       }
     }
@@ -43,7 +43,7 @@ module "apigee" {
           description     = "Development environment for API proxies"
           deployment_type = "ARCHIVE"
           api_proxy_type  = "CONFIGURABLE"
-          type           = "BASE"
+          type            = "BASE"
         }
       }
     }
@@ -53,11 +53,11 @@ module "apigee" {
     "instance-1" = {
       location             = "europe-west1"
       peering_cidr_range   = "10.0.0.0/22"
-      ip_range            = "10.0.4.0/22"
-      description         = "Production instance"
-      display_name        = "Production Instance"
+      ip_range             = "10.0.4.0/22"
+      description          = "Production instance"
+      display_name         = "Production Instance"
       consumer_accept_list = ["10.0.0.0/8"]
-      environment         = "prod"
+      environment          = "prod"
     }
     "instance-2" = {
       location     = "europe-west1"

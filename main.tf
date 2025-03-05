@@ -65,7 +65,7 @@ resource "google_apigee_environment" "main" {
   api_proxy_type    = each.value.api_proxy_type
   type              = each.value.type
   forward_proxy_uri = each.value.forward_proxy_uri
-  
+
   # Configure node scaling if provided
   dynamic "node_config" {
     for_each = each.value.node_config != null ? [each.value.node_config] : []
@@ -90,6 +90,20 @@ resource "google_apigee_envgroup_attachment" "main" {
 
   envgroup_id = google_apigee_envgroup.main[split("/", each.key)[0]].id
   environment = google_apigee_environment.main[each.key].name
+}
+
+# Manage IAM bindings for Apigee environments
+# This allows you to control who can access and manage specific environments
+# Common roles include:
+# - roles/apigee.environmentAdmin: Full access to manage the environment
+# - roles/apigee.developer: Deploy and manage API proxies
+# - roles/apigee.analyticsViewer: View analytics data
+resource "google_apigee_environment_iam_binding" "main" {
+  for_each = var.environment_iam
+  org_id   = google_apigee_organization.main.id
+  env_id   = each.key
+  role     = each.value.role
+  members  = each.value.members
 }
 
 # Create Apigee runtime instances

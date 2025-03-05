@@ -53,8 +53,8 @@ output "instances" {
   description = "Map of instance names to their details"
   value = {
     for k, v in google_apigee_instance.main : k => {
-      id                  = v.id
-      name                = v.name
+      id                 = v.id
+      name               = v.name
       location           = v.location
       peering_cidr_range = v.peering_cidr_range
       ip_range           = v.ip_range

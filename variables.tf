@@ -82,15 +82,15 @@ EOT
   type = map(object({
     hostnames = optional(set(string), [])
     environments = map(object({
-      display_name      = optional(string)      # Human-readable name for the environment
-      description       = optional(string)       # Detailed description of the environment
-      deployment_type   = optional(string)       # How API proxies are deployed (PROXY or ARCHIVE)
-      api_proxy_type    = optional(string)       # Type of API proxies supported (PROGRAMMABLE or CONFIGURABLE)
-      type              = optional(string)       # Environment feature set (BASE, INTERMEDIATE, or COMPREHENSIVE)
-      forward_proxy_uri = optional(string)       # URI for forwarding requests through a proxy
+      display_name      = optional(string) # Human-readable name for the environment
+      description       = optional(string) # Detailed description of the environment
+      deployment_type   = optional(string) # How API proxies are deployed (PROXY or ARCHIVE)
+      api_proxy_type    = optional(string) # Type of API proxies supported (PROGRAMMABLE or CONFIGURABLE)
+      type              = optional(string) # Environment feature set (BASE, INTERMEDIATE, or COMPREHENSIVE)
+      forward_proxy_uri = optional(string) # URI for forwarding requests through a proxy
       node_config = optional(object({
-        min_node_count = optional(number, 1)    # Minimum number of runtime nodes
-        max_node_count = optional(number, 2)    # Maximum number of runtime nodes
+        min_node_count = optional(number, 1) # Minimum number of runtime nodes
+        max_node_count = optional(number, 2) # Maximum number of runtime nodes
       }))
     }))
   }))
@@ -141,6 +141,47 @@ EOT
   }
 }
 
+variable "environment_iam" {
+  description = <<EOT
+IAM role bindings for Apigee environments. Configure access control for each environment.
+Structure:
+{
+  "environment-name" = {
+    role    = ["roles/apigee.environmentAdmin"]
+    members = ["user:jane@example.com", "group:devs@example.com"]
+  }
+}
+
+Common roles:
+- roles/apigee.environmentAdmin: Full access to manage the environment
+- roles/apigee.developer: Deploy and manage API proxies
+- roles/apigee.analyticsViewer: View analytics data
+- roles/apigee.analyticsAdmin: Manage analytics data
+- roles/apigee.deploymentAdmin: Manage deployments
+
+Member types:
+- user:email@example.com
+- serviceAccount:sa@project.iam.gserviceaccount.com
+- group:group@example.com
+- domain:example.com
+EOT
+  type = map(object({
+    role    = list(string)
+    members = list(string)
+  }))
+  default = {}
+
+  validation {
+    condition = alltrue([
+      for env, config in var.environment_iam : alltrue([
+        for member in config.members :
+        can(regex("^(user|serviceAccount|group|domain):", member))
+      ])
+    ])
+    error_message = "Members must be prefixed with 'user:', 'serviceAccount:', 'group:', or 'domain:'"
+  }
+}
+
 variable "instance_config" {
   description = <<EOT
 Configuration for Apigee runtime instances.
@@ -162,3 +203,4 @@ EOT
   }))
   default = {}
 }
+
