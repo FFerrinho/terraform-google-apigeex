@@ -43,15 +43,15 @@ variable "apigee_org_billing_type" {
   description = <<EOT
 Billing configuration for the Apigee organization:
 - EVALUATION: Free tier with limitations (default)
-- CONSUMPTION: Pay-as-you-go billing based on API calls
-- PREPAID: Fixed price subscription with included API call quota
+- PAYG: Pay-as-you-go billing based on API calls
+- SUBSCRIPTION: Fixed price subscription with included API call quota
 EOT
   type        = string
   default     = "EVALUATION"
 
   validation {
-    condition     = var.apigee_org_billing_type == "CONSUMPTION" || var.apigee_org_billing_type == "PREPAID" || var.apigee_org_billing_type == "EVALUATION"
-    error_message = "Billing type must be either EVALUATION, CONSUMPTION or PREPAID."
+    condition     = var.apigee_org_billing_type == "PAYG" || var.apigee_org_billing_type == "SUBSCRIPTION" || var.apigee_org_billing_type == "EVALUATION"
+    error_message = "Billing type must be either EVALUATION, PAYG or SUBSCRIPTION."
   }
 }
 
