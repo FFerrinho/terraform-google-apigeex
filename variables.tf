@@ -204,3 +204,96 @@ EOT
   default = {}
 }
 
+variable "kms_key_ring_name" {
+  description = <<EOT
+The name for the KMS key ring to be created for Apigee X encryption.
+Required when using CMEK (Customer-Managed Encryption Keys) with Apigee X.
+Only applicable when billing_type is not EVALUATION.
+EOT
+  type        = string
+  default     = ""
+}
+
+variable "kms_key_ring_location" {
+  description = <<EOT
+The location for the KMS key ring to be created.
+Required when using CMEK (Customer-Managed Encryption Keys) with Apigee X.
+Only applicable when billing_type is not EVALUATION.
+Typically should match the region where Apigee X resources are deployed.
+You can retrieve available locations using the command: gcloud kms locations list
+EOT
+  type        = string
+  default     = ""
+}
+
+variable "kms_crypto_key_api_consumer_data" {
+  description = <<EOT
+Configuration for KMS crypto keys used to encrypt API consumer data in Apigee X.
+Only applies when billing_type is not EVALUATION.
+Structure:
+{
+  "key-name" = {
+    purpose         = "ENCRYPT_DECRYPT"  # Purpose of the key (default)
+    rotation_period = "7776000s"         # Key rotation period in seconds (default: 90 days)
+    labels          = { team = "api" }   # Custom labels for the key
+  }
+}
+
+Note: All KMS keys are protected with prevent_destroy=true by default.
+To destroy KMS keys, you need to modify the lifecycle blocks in the kms.tf file.
+EOT
+  type = map(object({
+    purpose         = optional(string, "ENCRYPT_DECRYPT")
+    rotation_period = optional(string, "7776000s") # Minimum value is 1 day (86400s), variable default value is 90 days (7776000s)
+    labels          = optional(map(string), {})
+  }))
+  default = {}
+}
+
+variable "kms_crypto_key_control_plane" {
+  description = <<EOT
+Configuration for KMS crypto keys used to encrypt the Apigee X control plane.
+Only applies when billing_type is not EVALUATION.
+Structure:
+{
+  "key-name" = {
+    purpose         = "ENCRYPT_DECRYPT"  # Purpose of the key (default)
+    rotation_period = "7776000s"         # Key rotation period in seconds (default: 90 days)
+    labels          = { team = "api" }   # Custom labels for the key
+  }
+}
+
+Note: All KMS keys are protected with prevent_destroy=true by default.
+To destroy KMS keys, you need to modify the lifecycle blocks in the kms.tf file.
+EOT
+  type = map(object({
+    purpose         = optional(string, "ENCRYPT_DECRYPT")
+    rotation_period = optional(string, "7776000s") # Minimum value is 1 day (86400s), variable default value is 90 days (7776000s)
+    labels          = optional(map(string), {})
+  }))
+  default = {}
+}
+
+variable "kms_crypto_key_runtime_database" {
+  description = <<EOT
+Configuration for KMS crypto keys used to encrypt the Apigee X runtime database.
+Only applies when billing_type is not EVALUATION.
+Structure:
+{
+  "key-name" = {
+    purpose         = "ENCRYPT_DECRYPT"  # Purpose of the key (default)
+    rotation_period = "7776000s"         # Key rotation period in seconds (default: 90 days)
+    labels          = { team = "api" }   # Custom labels for the key
+  }
+}
+
+Note: All KMS keys are protected with prevent_destroy=true by default.
+To destroy KMS keys, you need to modify the lifecycle blocks in the kms.tf file.
+EOT
+  type = map(object({
+    purpose         = optional(string, "ENCRYPT_DECRYPT")
+    rotation_period = optional(string, "7776000s") # Minimum value is 1 day (86400s), variable default value is 90 days (7776000s)
+    labels          = optional(map(string), {})
+  }))
+  default = {}
+}

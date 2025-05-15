@@ -1,5 +1,13 @@
+provider "google" {
+  project = "my-project-id"
+  region  = "europe-west1"
+  # Custom endpoint for Apigee API data residency if required
+  # See: https://cloud.google.com/apigee/docs/api-platform/get-started/api-control-plane-jurisdiction
+  apigee_custom_endpoint = "https://REGION.apigee.googleapis.com"
+}
+
 module "apigee" {
-  source = "../../"
+  source = "../"
 
   project_id              = "my-project-id"
   vpc_name                = "my-vpc"
@@ -10,6 +18,54 @@ module "apigee" {
   apigee_org_billing_type = "CONSUMPTION"
   retention               = "MINIMUM"
 
+  # KMS Configuration for CMEK (Customer-Managed Encryption Keys)
+  # Required for non-EVALUATION billing types to encrypt data
+  kms_key_ring_name     = "apigee-keyring"
+  kms_key_ring_location = "europe-west1" # Should match the Apigee region
+
+  # KMS Crypto Key for API Consumer Data encryption
+  kms_crypto_key_api_consumer_data = {
+    "apigee-consumer-key" = {
+      purpose         = "ENCRYPT_DECRYPT"
+      rotation_period = "7776000s" # 90 days
+      labels = {
+        env        = "prod"
+        created_by = "terraform"
+        purpose    = "apigee-consumer-data"
+      }
+      prevent_destroy = true
+    }
+  }
+
+  # KMS Crypto Key for Control Plane encryption
+  kms_crypto_key_control_plane = {
+    "apigee-control-key" = {
+      purpose         = "ENCRYPT_DECRYPT"
+      rotation_period = "7776000s" # 90 days
+      labels = {
+        env        = "prod"
+        created_by = "terraform"
+        purpose    = "apigee-control-plane"
+      }
+      prevent_destroy = true
+    }
+  }
+
+  # KMS Crypto Key for Runtime Database encryption
+  kms_crypto_key_runtime_database = {
+    "apigee-db-key" = {
+      purpose         = "ENCRYPT_DECRYPT"
+      rotation_period = "7776000s" # 90 days
+      labels = {
+        env        = "prod"
+        created_by = "terraform"
+        purpose    = "apigee-runtime-db"
+      }
+      prevent_destroy = true
+    }
+  }
+
+  # Environment configuration
   environment_config = {
     "prod-group" = {
       hostnames = ["api.example.com", "api.example.org"]
@@ -49,6 +105,19 @@ module "apigee" {
     }
   }
 
+  # Environment IAM bindings
+  environment_iam = {
+    "prod" = {
+      role    = ["roles/apigee.environmentAdmin"]
+      members = ["user:admin@example.com", "group:apigee-admins@example.com"]
+    }
+    "dev" = {
+      role    = ["roles/apigee.developer", "roles/apigee.analyticsViewer"]
+      members = ["group:developers@example.com"]
+    }
+  }
+
+  # Runtime instance configuration
   instance_config = {
     "instance-1" = {
       location             = "europe-west1"

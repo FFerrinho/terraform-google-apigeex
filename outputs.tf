@@ -84,3 +84,15 @@ output "environment_group_attachments" {
     }
   }
 }
+
+# KMS outputs
+output "kms_key_ring" {
+  description = "The KMS key ring created for Apigee X encryption"
+  value       = length(google_kms_key_ring.main) > 0 ? google_kms_key_ring.main[0].id : null
+}
+
+output "kms_crypto_keys" {
+  description = "Map of all KMS crypto keys created for Apigee X"
+  value       = local.all_crypto_keys
+}
+
