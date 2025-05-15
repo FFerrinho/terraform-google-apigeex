@@ -112,7 +112,7 @@ EOT
       for group in var.environment_config : alltrue([
         for env in group.environments :
         env.api_proxy_type == null ||
-        contains(["API_PROXY_TYPE_UNSPECIFIED", "PROGRAMMABLE", "CONFIGURABLE"], env.deployment_type)
+        contains(["API_PROXY_TYPE_UNSPECIFIED", "PROGRAMMABLE", "CONFIGURABLE"], env.api_proxy_type)
       ])
     ])
     error_message = "api_proxy_type must be one of: API_PROXY_TYPE_UNSPECIFIED, PROGRAMMABLE or CONFIGURABLE"
@@ -123,7 +123,7 @@ EOT
       for group in var.environment_config : alltrue([
         for env in group.environments :
         env.type == null ||
-        contains(["ENVIRONMENT_TYPE_UNSPECIFIED", "BASE", "INTERMEDIATE", "COMPREHENSIVE"], env.deployment_type)
+        contains(["ENVIRONMENT_TYPE_UNSPECIFIED", "BASE", "INTERMEDIATE", "COMPREHENSIVE"], env.type)
       ])
     ])
     error_message = "type must be one of: ENVIRONMENT_TYPE_UNSPECIFIED, BASE, INTERMEDIATE or COMPREHENSIVE"
