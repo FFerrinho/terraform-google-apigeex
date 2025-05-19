@@ -199,7 +199,7 @@ EOT
     description          = optional(string)
     display_name         = optional(string)
     consumer_accept_list = optional(list(string))
-    environment          = optional(string)
+    environments          = optional(set(string))
   }))
   default = {}
 }
