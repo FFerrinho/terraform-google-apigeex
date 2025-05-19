@@ -12,11 +12,11 @@ module "apigee" {
   apigee_org_display_name = "My Apigee Organization"
   apigee_org_description  = "Minimal example of Apigee X deployment"
   region                  = "europe-west1"
-  
+
   # For CLOUD runtime, specify the VPC network name
-  vpc_name                = "default"
-  runtime_type            = "CLOUD"
-  
+  vpc_name     = "default"
+  runtime_type = "CLOUD"
+
   # Using default EVALUATION billing type (free tier)
   # No KMS encryption keys required for EVALUATION
 

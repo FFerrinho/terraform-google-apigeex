@@ -131,7 +131,17 @@ resource "google_apigee_instance" "main" {
 # Attach instances to environments
 # This determines which environment's proxies run on which instances
 resource "google_apigee_instance_attachment" "main" {
-  for_each    = var.instance_config
+  for_each = merge([
+    for instance_name, config in var.instance_config :
+    {
+      for env in config.environments != null ? config.environments : [] :
+      "${instance_name}-${env}" => {
+        instance_id = google_apigee_instance.main[instance_name].id
+        environment = env
+      }
+    }
+  ]...)
+
+  instance_id = each.value.instance_id
   environment = each.value.environment
-  instance_id = google_apigee_instance.main[each.key].id
 }

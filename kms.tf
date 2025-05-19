@@ -11,7 +11,7 @@ locals {
   # Check if KMS location is compatible with Apigee region
   is_valid_location = (
     var.kms_key_ring_name == "" || var.kms_key_ring_location == "" ? true :
-    var.kms_key_ring_location == var.region || # Exact match is valid
+    var.kms_key_ring_location == var.region ||                                                                                             # Exact match is valid
     contains(local.region_mappings[var.kms_key_ring_location] != null ? local.region_mappings[var.kms_key_ring_location] : [], var.region) # Broader region contains Apigee region
   )
 }
@@ -27,7 +27,7 @@ resource "google_kms_key_ring" "main" {
       condition     = var.kms_key_ring_location != ""
       error_message = "KMS key ring location must be specified when kms_key_ring_name is provided."
     }
-    
+
     precondition {
       condition     = local.is_valid_location
       error_message = "KMS key ring location (${var.kms_key_ring_location}) must either match the Apigee region (${var.region}) or be a broader region that contains it."
