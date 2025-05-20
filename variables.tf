@@ -122,7 +122,7 @@ EOT
     condition = alltrue([
       for group in var.environment_config : alltrue([
         for env in group.environments :
-        env.type == null ||
+        env.type == null ? true : 
         contains(["ENVIRONMENT_TYPE_UNSPECIFIED", "BASE", "INTERMEDIATE", "COMPREHENSIVE"], env.type)
       ])
     ])

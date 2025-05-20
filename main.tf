@@ -69,9 +69,9 @@ resource "google_apigee_environment" "main" {
   org_id            = google_apigee_organization.main.id
   display_name      = each.value.display_name
   description       = each.value.description
-  deployment_type   = each.value.deployment_type
-  api_proxy_type    = each.value.api_proxy_type
-  type              = each.value.type
+  deployment_type   = each.value.deployment_type != null ? each.value.deployment_type : null
+  api_proxy_type    = each.value.api_proxy_type != null ? each.value.api_proxy_type : null 
+  type              = each.value.type != null ? each.value.type : null
   forward_proxy_uri = each.value.forward_proxy_uri
 
   # Configure node scaling if provided
