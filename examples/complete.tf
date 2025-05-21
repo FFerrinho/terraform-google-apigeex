@@ -15,7 +15,7 @@ module "apigee" {
   apigee_org_description  = "Complete example of Apigee X deployment"
   region                  = "europe-west1"
   runtime_type            = "CLOUD"
-  apigee_org_billing_type = "CONSUMPTION"
+  apigee_org_billing_type = "EVALUATION"
   retention               = "MINIMUM"
 
   # KMS Configuration for CMEK (Customer-Managed Encryption Keys)
@@ -126,13 +126,13 @@ module "apigee" {
       description          = "Production instance"
       display_name         = "Production Instance"
       consumer_accept_list = ["10.0.0.0/8"]
-      environment          = "prod"
+      environments         = ["prod"]
     }
     "instance-2" = {
       location     = "europe-west1"
       description  = "Development instance"
       display_name = "Development Instance"
-      environment  = "dev"
+      environments = ["dev"]
     }
   }
 }

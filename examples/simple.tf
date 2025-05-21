@@ -37,7 +37,7 @@ module "apigee" {
   instance_config = {
     "instance-1" = {
       location    = "europe-west1"
-      environment = "dev"
+      environments = ["dev"]
     }
   }
 }
